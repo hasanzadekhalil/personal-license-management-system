@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: license_db
+    restart: always
+    environment:
+      POSTGRES_USER: license_user
+      POSTGRES_PASSWORD: license_secure_pass_2026
+      POSTGRES_DB: license_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

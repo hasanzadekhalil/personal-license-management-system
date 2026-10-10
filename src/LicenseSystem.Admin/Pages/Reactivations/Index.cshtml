@@ -1,0 +1,78 @@
+@page
+@model LicenseSystem.Admin.Pages.Reactivations.IndexModel
+@{
+    ViewData["Title"] = "Hardware Reactivation Hub";
+}
+
+<div class="row">
+    <div class="col-lg-7">
+        <h3>Pending Reactivation Requests</h3>
+        <p class="text-muted">Review legitimate hardware changes (Motherboard, CPU, or SSD replacements).</p>
+
+        <div class="card shadow-sm mb-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>License Key</th>
+                            <th>Nonce</th>
+                            <th>New Hardware Hash</th>
+                            <th>Requested At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.PendingTransactions.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">No pending reactivation requests found.</td>
+                            </tr>
+                        }
+                        @foreach (var tx in Model.PendingTransactions)
+                        {
+                            <tr>
+                                <td><span class="badge bg-secondary font-monospace">@tx.License.LicenseKey</span></td>
+                                <td><span class="badge bg-light text-dark font-monospace">@tx.Nonce</span></td>
+                                <td><small class="text-truncate d-inline-block font-monospace" style="max-width: 150px;">@tx.NewHardwareHash</small></td>
+                                <td>@tx.RequestedAtUtc.ToString("MM-dd HH:mm")</td>
+                                <td>
+                                    <form method="post" asp-page-handler="ApproveOnline" class="d-inline">
+                                        <input type="hidden" name="nonce" value="@tx.Nonce" />
+                                        <button type="submit" class="btn btn-sm btn-success">Approve Online</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Offline Reactivation Generator (.licresp)</h5>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">Paste the content of the client's <code>.licreq</code> file to digitally sign and issue an offline reactivation response.</p>
+                <form method="post" asp-page-handler="ProcessOfflineFile">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Request JSON (.licreq)</label>
+                        <textarea class="form-control font-monospace small" asp-for="OfflineRequestJson" rows="6" placeholder='{"license_key":"...","new_hardware_hash":"...","nonce":"..."}' required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign & Generate .licresp</button>
+                </form>
+
+                @if (!string.IsNullOrWhiteSpace(Model.GeneratedResponseJson))
+                {
+                    <div class="alert alert-success mt-3">
+                        <h6 class="fw-bold">Generated Signed Response (.licresp):</h6>
+                        <textarea class="form-control font-monospace small bg-white" rows="5" readonly>@Model.GeneratedResponseJson</textarea>
+                        <small class="text-muted d-block mt-2">Save this text as <code>ReactivationResponse.licresp</code> and transfer to the offline client.</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -40,7 +40,8 @@ public class LicensePolicyEngine
         SignedArtifact<LicensePayload> signedArtifact,
         string expectedProductCode,
         bool isOnlineAvailable = true,
-        bool serverValidationSucceeded = true)
+        bool serverValidationSucceeded = true,
+        SignedArtifact<ReactivationPayload>? reactivationArtifact = null)
     {
         var now = _timeProvider.UtcNow;
         var monotonicTicks = _timeProvider.MonotonicTicks;
@@ -83,7 +84,26 @@ public class LicensePolicyEngine
 
         // 4. Hardware Binding Check (AT-06, AT-07, AT-08, AT-09, AT-12)
         var currentHardwareHash = _hardwareProvider.GetCompositeHash();
-        if (!string.Equals(payload.HardwareHash, currentHardwareHash, StringComparison.OrdinalIgnoreCase))
+        bool isHardwareAuthorized = string.Equals(payload.HardwareHash, currentHardwareHash, StringComparison.OrdinalIgnoreCase);
+
+        if (!isHardwareAuthorized)
+        {
+            // Check if there is an authorized signed reactivation artifact for this machine
+            if (reactivationArtifact != null && reactivationArtifact.Payload != null && !string.IsNullOrWhiteSpace(reactivationArtifact.Signature))
+            {
+                var canonicalReactivation = CanonicalJsonSerializer.Serialize(reactivationArtifact.Payload);
+                var isReactivationSignatureValid = _signatureVerifier.VerifySignature(canonicalReactivation, reactivationArtifact.Signature, _publicKeySpki);
+
+                if (isReactivationSignatureValid &&
+                    string.Equals(reactivationArtifact.Payload.LicenseKey, payload.LicenseKey, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(reactivationArtifact.Payload.NewHardwareHash, currentHardwareHash, StringComparison.OrdinalIgnoreCase))
+                {
+                    isHardwareAuthorized = true;
+                }
+            }
+        }
+
+        if (!isHardwareAuthorized)
         {
             // CRITICAL POLICY PRECEDENCE (AT-12): Hardware mismatch NEVER receives grace!
             return PolicyEvaluationResult.Locked(

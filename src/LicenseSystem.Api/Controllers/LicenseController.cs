@@ -177,7 +177,8 @@ public class LicenseController : ControllerBase
 
         if (license.IsRevoked)
         {
-            return Ok(new ValidationResponse { IsValid = false, Status = "Revoked", ErrorMessage = license.RevocationReason });
+            await _auditRepo.LogEventAsync("ValidationFailedRevoked", "Client", req.ProductCode, req.LicenseKey, new { reason = license.RevocationReason }, GetIp());
+            return StatusCode(403, new ValidationResponse { IsValid = false, Status = "Revoked", ErrorMessage = license.RevocationReason });
         }
 
         if (DateTime.UtcNow >= license.ExpiresAtUtc)

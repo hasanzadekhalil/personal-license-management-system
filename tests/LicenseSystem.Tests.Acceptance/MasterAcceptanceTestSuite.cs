@@ -504,7 +504,7 @@ public class MasterAcceptanceTestSuite : IClassFixture<WebApplicationFactory<Pro
         var response = await _client.PostAsJsonAsync("/api/v1/license/activate", actReq);
         var body = await response.Content.ReadFromJsonAsync<ActivationResponse>();
 
-        var artifact = JsonSerializer.Deserialize<SignedArtifact<LicensePayload>>(body!.SignedLicenseJson);
+        var artifact = JsonSerializer.Deserialize<SignedArtifact<LicensePayload>>(body!.SignedLicenseJson!);
         var activated = DateTime.Parse(artifact!.Payload.ActivatedAtUtc);
         var expires = DateTime.Parse(artifact.Payload.ExpiresAtUtc);
 

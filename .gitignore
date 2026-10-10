@@ -1,0 +1,15 @@
+## .NET Core / C# .gitignore
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+.idea/
+*.swp
+*.lock
+appsettings.local.json
+*.pfx
+*.pem
+!keys/public_key.pem

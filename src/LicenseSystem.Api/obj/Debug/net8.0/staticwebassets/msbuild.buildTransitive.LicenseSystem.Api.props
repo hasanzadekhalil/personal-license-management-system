@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/LicenseSystem.Api.props" />
-</Project>

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/LicenseSystem.Api.props" />
-</Project>

@@ -13,5 +13,4 @@ appsettings.local.json
 *.pfx
 *.pem
 !keys/public_key.pem
-.claude/
 

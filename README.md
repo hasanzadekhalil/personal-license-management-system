@@ -61,7 +61,7 @@ dotnet run --project src/LicenseSystem.Api
 dotnet run --project src/LicenseSystem.Admin
 ```
 - Admin Portal URL: `http://localhost:5001`
-- Administrator Credentials: `admin@licensesystem.local` / `Admin_Secure_Pass_2026!` (Pre-filled on login screen for 1-click access)
+- Administrator Credentials: `admin@licensesystem.local` / `Admin_Secure_Pass_2026!`
 
 ### 6. Run Desktop Demo & Security Simulation
 ```bash

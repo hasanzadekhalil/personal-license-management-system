@@ -16,21 +16,36 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Products/Index">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Licenses/Index">Licenses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Reactivations/Index">Reactivation Hub</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/AuditLogs/Index">Audit Logs</a>
-                        </li>
-                    </ul>
-                    <span class="navbar-text badge bg-success">Admin Authority: Online</span>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Products/Index">Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Licenses/Index">Licenses</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Reactivations/Index">Reactivation Hub</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/AuditLogs/Index">Audit Logs</a>
+                            </li>
+                        </ul>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-success">Admin Authority: Online</span>
+                            <span class="text-white-50 small me-2">👤 @User.Identity.Name</span>
+                            <a class="btn btn-outline-danger btn-sm" asp-area="" asp-page="/Logout">Sign Out</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="btn btn-outline-warning btn-sm" asp-area="" asp-page="/Login">Sign In</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

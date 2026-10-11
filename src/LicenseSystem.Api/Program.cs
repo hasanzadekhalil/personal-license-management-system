@@ -9,14 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Personal License System API",
+        Version = "v1",
+        Description = "Owner-Controlled Asymmetric Licensing & Hardware Binding Management API"
+    });
+});
 
 // Configure PostgreSQL DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Host=localhost;Port=5432;Database=license_management;Username=license_user;Password=license_secure_pass_2026";
 
 builder.Services.AddDbContext<LicenseDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
 // Register Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -65,11 +73,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Personal License System API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseRouting();
 app.MapControllers();

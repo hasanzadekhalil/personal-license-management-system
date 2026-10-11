@@ -152,9 +152,10 @@ public class Program
             Console.Write("Select an option: ");
 
             var input = Console.ReadLine()?.Trim().ToUpperInvariant();
+            if (string.IsNullOrEmpty(input)) continue;
             if (input == "Q") break;
 
-            await HandleMenuOptionAsync(input ?? "");
+            await HandleMenuOptionAsync(input);
             Console.WriteLine("\nPress Enter to continue...");
             Console.ReadLine();
         }

@@ -1,0 +1,61 @@
+@page
+@model LicenseSystem.Admin.Pages.LoginModel
+@{
+    ViewData["Title"] = "Administrator Login";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white text-center py-4">
+                <h4 class="mb-0 fw-bold">🔐 License Authority</h4>
+                <small class="text-white-50">Administrator Security Authentication</small>
+            </div>
+            <div class="card-body p-4">
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger py-2 small" role="alert">
+                        <strong>Access Denied:</strong> @Model.ErrorMessage
+                    </div>
+                }
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Administrator Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted">📧</span>
+                            <input type="email" asp-for="Email" class="form-control" placeholder="admin@licensesystem.local" required autofocus />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-secondary">Master Secret Key / Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted">🔑</span>
+                            <input type="password" asp-for="Password" class="form-control" placeholder="••••••••••••••••" required />
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="rememberMeCheck" />
+                        <label class="form-check-label text-muted small" for="rememberMeCheck">
+                            Remember session on this secure terminal
+                        </label>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary fw-semibold py-2">
+                            Authenticate & Enter Authority Portal
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3">
+                <small class="text-muted">
+                    Default Credentials: <code>admin@licensesystem.local</code> / <code>Admin_Secure_Pass_2026!</code>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

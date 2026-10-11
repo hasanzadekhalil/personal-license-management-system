@@ -48,6 +48,13 @@ builder.Services.AddSingleton<ISigningService>(sp =>
 
 var app = builder.Build();
 
+// Automatically ensure database schema exists
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LicenseDbContext>();
+    db.Database.EnsureCreated();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -1,3 +1,4 @@
+using System.Globalization;
 using LicenseSystem.ClientSdk.Hardware;
 using LicenseSystem.ClientSdk.Temporal;
 using LicenseSystem.Core.Cryptography;
@@ -112,13 +113,14 @@ public class LicensePolicyEngine
         }
 
         // 5. Expiration Check (AT-03, AT-18)
-        if (!DateTime.TryParse(payload.ExpiresAtUtc, out var expiresAtUtc))
+        if (!DateTimeOffset.TryParse(payload.ExpiresAtUtc, CultureInfo.InvariantCulture, DateTimeStyles.None, out var expiresOffset))
         {
             return PolicyEvaluationResult.Locked(
                 LicenseStatus.Expired,
                 "Invalid expiration timestamp format in license artifact.");
         }
 
+        var expiresAtUtc = expiresOffset.UtcDateTime;
         if (now >= expiresAtUtc)
         {
             // Expiration NEVER receives grace!
@@ -154,7 +156,7 @@ public class LicensePolicyEngine
             }
 
             // Connection lost / offline
-            var lastSync = _lastSuccessfulOnlineSyncUtc ?? DateTime.Parse(payload.ActivatedAtUtc);
+            var lastSync = _lastSuccessfulOnlineSyncUtc ?? (DateTimeOffset.TryParse(payload.ActivatedAtUtc, CultureInfo.InvariantCulture, DateTimeStyles.None, out var actOffset) ? actOffset.UtcDateTime : DateTime.UtcNow);
             var offlineDuration = now - lastSync;
             var maxGrace = TimeSpan.FromHours(payload.GracePeriodHours > 0 ? payload.GracePeriodHours : 6);
 

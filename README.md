@@ -46,32 +46,28 @@ docker compose up -d license_db
 ```
 The database starts on `localhost:5432` (database: `license_management`, user: `license_user`).
 
-### 3. Apply Database Migrations
-```bash
-dotnet ef database update --project src/LicenseSystem.Infrastructure --startup-project src/LicenseSystem.Api
-```
+### 3. Automatic Database Initialization & Seeding
+Database schema, default product (`PROD-DESKTOP-APP`), and sample active license key (`LIC-DEMO-2026-OK`) are automatically initialized on startup via `EnsureCreated()` and `DatabaseSeeder`.
 
 ### 4. Run Central Licensing Web API
 ```bash
-cd src/LicenseSystem.Api
-dotnet run
+dotnet run --project src/LicenseSystem.Api
 ```
 - API Base URL: `http://localhost:5000`
 - Swagger Documentation: `http://localhost:5000/swagger`
 
 ### 5. Run Admin Management Portal
 ```bash
-cd src/LicenseSystem.Admin
-dotnet run
+dotnet run --project src/LicenseSystem.Admin
 ```
 - Admin Portal URL: `http://localhost:5001`
-- Default Credentials: `admin@licensesystem.local` / `Admin_Secure_Pass_2026!`
+- Administrator Credentials: `admin@licensesystem.local` / `Admin_Secure_Pass_2026!` (Pre-filled on login screen for 1-click access)
 
 ### 6. Run Desktop Demo & Security Simulation
 ```bash
 dotnet run --project src/LicenseSystem.WpfDemo
 ```
-Provides an interactive dashboard demonstrating online activation, offline grace countdowns, hardware swaps (motherboard, CPU, SSD), and clock rollback detection.
+Provides an interactive dashboard demonstrating online activation with pre-seeded key `LIC-DEMO-2026-OK`, offline grace countdowns, hardware swaps (motherboard, CPU, SSD), and clock rollback detection.
 
 ---
 

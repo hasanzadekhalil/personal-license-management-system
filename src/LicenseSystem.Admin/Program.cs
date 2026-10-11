@@ -67,11 +67,12 @@ builder.Services.AddSingleton<ISigningService>(sp =>
 
 var app = builder.Build();
 
-// Automatically ensure database schema exists
+// Automatically ensure database schema exists and seed default desktop products
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<LicenseDbContext>();
     db.Database.EnsureCreated();
+    DatabaseSeeder.SeedDefaultDataAsync(db).GetAwaiter().GetResult();
 }
 
 // Configure the HTTP request pipeline.

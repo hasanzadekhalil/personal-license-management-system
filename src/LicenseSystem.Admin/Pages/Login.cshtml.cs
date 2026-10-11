@@ -29,6 +29,10 @@ public class LoginModel : PageModel
             return LocalRedirect(returnUrl ?? "/");
         }
 
+        // Pre-fill credentials for seamless administrative access
+        Email = DefaultAdminEmail;
+        Password = DefaultAdminPassword;
+
         return Page();
     }
 

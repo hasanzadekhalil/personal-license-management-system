@@ -166,14 +166,15 @@ public class Program
         switch (option)
         {
             case "1":
-                Console.Write("\nEnter License Key (e.g., LIC-SAMPLE-1234): ");
+                Console.Write("\nEnter License Key [Press Enter for default: LIC-DEMO-2026-OK]: ");
                 var key = Console.ReadLine()?.Trim() ?? "";
-                if (!string.IsNullOrEmpty(key))
+                if (string.IsNullOrEmpty(key))
                 {
-                    Console.WriteLine("[*] Contacting licensing server...");
-                    var res = await _client!.ActivateOnlineAsync(key);
-                    PrintStatusBadge(res);
+                    key = "LIC-DEMO-2026-OK";
                 }
+                Console.WriteLine($"[*] Contacting licensing server ({_serverUrl}) for product '{_productCode}'...");
+                var res = await _client!.ActivateOnlineAsync(key);
+                PrintStatusBadge(res);
                 break;
 
             case "2":
